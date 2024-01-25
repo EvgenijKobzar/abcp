@@ -7,9 +7,8 @@ use Entity\Seller;
 use Enum\EntityType;
 use Lib\Error;
 use Lib\Result;
-use function NW\WebService\References\Operations\Notification\getResellerEmailFrom;
 
-class Manger
+class Manager
 {
     public function resolveEntityCommunicationData($typeId, Contractor $entity, $templateData): Result
     {

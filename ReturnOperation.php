@@ -2,12 +2,10 @@
 
 namespace NW\WebService\References\Operations\Notification;
 
-use Lib\Handler\HandlerReturn;
-
 class TsReturnOperation extends ReferencesOperation
 {
-    public const TYPE_NEW    = 1;
-    public const TYPE_CHANGE = 2;
+    public const TYPE_NEW    = 1; // TODO: это числовые коды перечисления @see NotificationEvents::NEW_RETURN_STATUS, стоит объединить в один класс перечисления
+    public const TYPE_CHANGE = 2; // TODO: это числовые коды перечисления @see NotificationEvents::CHANGE_RETURN_STATUS, стоит объединить в один класс перечисления
 
     /**
      * @throws \Exception
@@ -15,11 +13,6 @@ class TsReturnOperation extends ReferencesOperation
     // TODO: описать тим возвращаемого значения
     public function doOperation(): void // TODO: возвращаемое значение array
     {
-        // refactoring
-        return (new HandlerReturn())
-            ->process();
-
-
         // TODO: нет проверки подписи всех параметров и проверки время истечения подписи
         $data = (array)$this->getRequest('data'); // TODO: в коде работаем !только! со списком параметром - по 'белому списку'
         $resellerId = $data['resellerId']; // TODO: необходима интернализация значения - (int)
@@ -112,7 +105,9 @@ class TsReturnOperation extends ReferencesOperation
                            'emailFrom' => $emailFrom,
                            'emailTo'   => $email,
                             // TODO: подобный вызов функций усложняет работу в IDE, снижает читаемость. По мере накапливания методов к классе метод будет увеличиваться. Сложная работа с параметрами.
+                            // TODO: метод экземплярный следом не экземплярный
                            'subject'   => $this->__('complaintEmployeeEmailSubject', $templateData, $resellerId),
+                            // TODO: метод не экземплярный
                            'message'   => __('complaintEmployeeEmailBody', $templateData, $resellerId),
                     ],
                 ], $resellerId, /* $client->id еще один параметр пропущен */,
@@ -134,7 +129,9 @@ class TsReturnOperation extends ReferencesOperation
                     0 => [ // MessageTypes::EMAIL
                            'emailFrom' => $emailFrom,
                            'emailTo'   => $client->email,
+                            // TODO: метод не экземплярный
                            'subject'   => __('complaintClientEmailSubject', $templateData, $resellerId),
+                            // TODO: метод не экземплярный
                            'message'   => __('complaintClientEmailBody', $templateData, $resellerId),
                     ],
                 ], $resellerId, $client->id, NotificationEvents::CHANGE_RETURN_STATUS, (int)$data['differences']['to']); // TODO: в данном виде отсутствует возврат сообщения об ошибке

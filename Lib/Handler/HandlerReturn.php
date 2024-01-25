@@ -10,7 +10,7 @@ use Entity\Seller;
 use Enum\EntityType;
 use Enum\NotificationType;
 use Enum\StatusType;
-use Lib\Communication\Manger;
+use Lib\Communication\Manager;
 use Lib\Env\Vars;
 use Lib\Error;
 use Lib\Result;
@@ -155,7 +155,7 @@ class HandlerReturn
             $client = $contractors['client'];
             $reseller = $contractors['reseller'];
 
-            $r = (new Manger())->resolveEntityCommunicationData(EntityType::EMPLOYEE, $reseller, $templateData);
+            $r = (new Manager())->resolveEntityCommunicationData(EntityType::EMPLOYEE, $reseller, $templateData);
             if ($r->isSuccess())
             {
                 $result['notificationEmployeeByEmail'] = MessagesClient::sendMessage($r->getData()['items'], $reseller->getId(), null, self::CHANGE_RETURN_STATUS, null);
@@ -166,7 +166,7 @@ class HandlerReturn
             {
                 if (in_array($statusId, StatusType::getAll()))
                 {
-                    $r = (new Manger())->resolveEntityCommunicationData(EntityType::CLIENT, $client, $templateData);
+                    $r = (new Manager())->resolveEntityCommunicationData(EntityType::CLIENT, $client, $templateData);
 
                     if ($r->isSuccess())
                     {
@@ -315,14 +315,14 @@ class HandlerReturn
                                 && isset($fields['differences']['to'])
                                 && StatusType::isDefined($fields['differences']['to'])
                         ? (int)$fields['differences']['to']
-                        : StatusType::UNDEFINED,
+                        : StatusType::UNDEFINED
+                ],
                 'complaintId' => isset($fields['complaintId']) ? (int)$fields['complaintId'] : 0,
                 'complaintNumber' => isset($fields['complaintNumber']) ? (string)$fields['complaintNumber'] : '',
                 'consumptionId' => isset($fields['consumptionId']) ? (int)$fields['consumptionId'] : 0,
                 'consumptionNumber' => isset($fields['consumptionNumber']) ? (string)$fields['consumptionNumber'] : '',
                 'agreementNumber' => isset($fields['agreementNumber']) ? (string)$fields['agreementNumber'] : '',
                 'date' => isset($fields['date']) ? (string)$fields['date'] : '',
-            ]
         ];
     }
 

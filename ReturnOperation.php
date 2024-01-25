@@ -20,6 +20,7 @@ class TsReturnOperation extends ReferencesOperation
             ->process();
 
 
+        // TODO: нет проверки подписи всех параметров и проверки время истечения подписи
         $data = (array)$this->getRequest('data'); // TODO: в коде работаем !только! со списком параметром - по 'белому списку'
         $resellerId = $data['resellerId']; // TODO: необходима интернализация значения - (int)
         $notificationType = (int)$data['notificationType'];

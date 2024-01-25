@@ -11,6 +11,7 @@ use Enum\EntityType;
 use Enum\NotificationType;
 use Enum\StatusType;
 use Lib\Communication\Manger;
+use Lib\Env\Vars;
 use Lib\Error;
 use Lib\Result;
 
@@ -24,6 +25,19 @@ class HandlerReturn
     public function process(): Result
     {
         $data = (array)$this->getRequest('data');
+
+        $r = $this->verifySign($data);
+        if($r->isSuccess() === false)
+        {
+            return $r;
+        }
+
+        $r = $this->isExpired($data);
+        if($r->isSuccess() === false)
+        {
+            return $r;
+        }
+
         $fields = static::internalize($data);
 
         $r = $this->validation($fields);
@@ -314,5 +328,64 @@ class HandlerReturn
     private function getRequest(string $name)
     {
         return $_REQUEST[$name];
+    }
+
+    private function verifySign($data): Result
+    {
+        $r = new Result();
+
+        $fields = [
+            'clientId',
+            'expertId',
+            'creatorId',
+            'resellerId',
+            'complaintId',
+            'complaintNumber',
+            'consumptionId',
+            'consumptionNumber',
+            'agreementNumber',
+            'date',
+            'expired',
+        ];
+
+        $hash_string = '';
+        foreach ($fields as $field) {
+            $hash_string .= (isset($data[$field]) ? $data[$field] : '') . ';';
+        }
+
+        $hash_string .= $this->getSecretKey();
+
+        $transaction_hash = base64_encode(hash('sha256', $hash_string, true));
+
+        $transaction_sign = isset($data['hash']) ? (string)$data['hash'] : null;
+
+        if ($transaction_sign !== $transaction_hash)
+        {
+            $r->addError(new Error('Hash invalid'), 500);
+        }
+
+        return $r;
+    }
+
+    private function isExpired($data): Result
+    {
+        $r = new Result();
+
+        if (time() > (int)$data['expired'])
+        {
+            $r->addError(new Error('Token is expired', 500));
+        }
+
+        return $r;
+    }
+
+    /**
+     * Метод возвращает hash для обработчика
+     * файл настроек лежит выше DOCUMENT_ROOT либо в БД
+     * @return string
+     */
+    private function getSecretKey(): string
+    {
+        return (string)Vars::getVar('handler')['secret_key'];
     }
 }

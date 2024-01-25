@@ -380,7 +380,7 @@ class HandlerReturn
     }
 
     /**
-     * Метод возвращает hash для обработчика
+     * Метод возвращает secret для обработчика
      * файл настроек лежит выше DOCUMENT_ROOT либо в БД
      * @return string
      */

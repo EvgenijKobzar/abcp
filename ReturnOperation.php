@@ -106,6 +106,7 @@ class TsReturnOperation extends ReferencesOperation
         $emails = getEmailsByPermit($resellerId, 'tsGoodsReturn'); // TODO: магическую строку необходимо вынести в константу
         if (!empty($emailFrom) && count($emails) > 0) {
             foreach ($emails as $email) { // TODO: в цикле вызывается MessagesClient::sendMessage, хотя видно что на вход пронимается список сообщений
+                // TODO: требуется проанализировать - отправка осуществляется 'по месту' или через очередь, синхронно
                 MessagesClient::sendMessage([ // TODO: нет возвращаемого значения
                     0 => [ // MessageTypes::EMAIL
                            'emailFrom' => $emailFrom,
@@ -126,6 +127,7 @@ class TsReturnOperation extends ReferencesOperation
         // Шлём клиентское уведомление, только если произошла смена статуса
         if ($notificationType === self::TYPE_CHANGE && !empty($data['differences']['to'])) { // TODO: получается что ожидается, что в поле to может придти неожиданный результат. значит надо выше проводить валидацию
             if (!empty($emailFrom) && !empty($client->email)) {
+                // TODO: требуется проанализировать - отправка осуществляется 'по месту' или через очередь, синхронно
                 MessagesClient::sendMessage([ // TODO: нет возвращаемого значения
                     0 => [ // MessageTypes::EMAIL
                            'emailFrom' => $emailFrom,
@@ -139,6 +141,7 @@ class TsReturnOperation extends ReferencesOperation
             }
 
             if (!empty($client->mobile)) {
+                // TODO: требуется проанализировать - отправка осуществляется 'по месту' или через очередь, синхронно
                 $res = NotificationManager::send($resellerId, $client->id, NotificationEvents::CHANGE_RETURN_STATUS, (int)$data['differences']['to'], $templateData, $error);
                 if ($res) {
                     $result['notificationClientBySms']['isSent'] = true; //TODO: структура успешного ответа notificationClientByEmail и notificationClientBySms.isSent отличается

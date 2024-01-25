@@ -119,7 +119,8 @@ class HandlerReturn
                                 'DIFFERENCES'        => $fields['differences'],
                             ];
 
-                            $r = $this->notification(
+                            // TODO: рассмотреть возможность отправки через очередь - асинхронно
+                            $r = $this->notificationSendDirectly(
                                 $fields['notificationType'],
                                 $fields['differences']['to'],
                                 [
@@ -137,7 +138,7 @@ class HandlerReturn
         return $r;
     }
 
-    protected function notification($type, $contractors, $statusId, $templateData): Result
+    protected function notificationSendDirectly($type, $contractors, $statusId, $templateData): Result
     {
         $result = [
             'notificationEmployeeByEmail' => false,

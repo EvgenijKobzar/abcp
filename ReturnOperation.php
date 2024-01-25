@@ -111,6 +111,7 @@ class TsReturnOperation extends ReferencesOperation
                     0 => [ // MessageTypes::EMAIL
                            'emailFrom' => $emailFrom,
                            'emailTo'   => $email,
+                            // TODO: подобный вызов функций усложняет работу в IDE, снижает читаемость. По мере накапливания методов к классе метод будет увеличиваться. Сложная работа с параметрами.
                            'subject'   => $this->__('complaintEmployeeEmailSubject', $templateData, $resellerId),
                            'message'   => __('complaintEmployeeEmailBody', $templateData, $resellerId),
                     ],
@@ -127,6 +128,7 @@ class TsReturnOperation extends ReferencesOperation
         // Шлём клиентское уведомление, только если произошла смена статуса
         if ($notificationType === self::TYPE_CHANGE && !empty($data['differences']['to'])) { // TODO: получается что ожидается, что в поле to может придти неожиданный результат. значит надо выше проводить валидацию
             if (!empty($emailFrom) && !empty($client->email)) {
+                // TODO: большое количество параметров у метода. Подусать как сократит это количество
                 // TODO: требуется проанализировать - отправка осуществляется 'по месту' или через очередь, синхронно
                 MessagesClient::sendMessage([ // TODO: нет возвращаемого значения
                     0 => [ // MessageTypes::EMAIL
@@ -141,6 +143,7 @@ class TsReturnOperation extends ReferencesOperation
             }
 
             if (!empty($client->mobile)) {
+                // TODO: большое количество параметров у метода. Подусать как сократит это количество
                 // TODO: требуется проанализировать - отправка осуществляется 'по месту' или через очередь, синхронно
                 $res = NotificationManager::send($resellerId, $client->id, NotificationEvents::CHANGE_RETURN_STATUS, (int)$data['differences']['to'], $templateData, $error);
                 if ($res) {

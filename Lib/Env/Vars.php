@@ -6,6 +6,9 @@ class Vars
 {
     static public function getVar(string $name): array
     {
-        // TODO: Implement getVar() method.
+        $evn['handler'] = [
+            'secret_key' => 'DnNLUCm4JX5gB7tQ5LcMb2tp4qermAF7pPVwYya+iNY='
+        ];
+        return $evn[$name];
     }
 }

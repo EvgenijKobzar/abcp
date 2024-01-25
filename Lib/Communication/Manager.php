@@ -39,8 +39,8 @@ class Manager
                         [ // MessageTypes::EMAIL
                             'emailFrom' => $emailFrom,
                             'emailTo'   => $email,
-                            'subject'   => $this->__('complaintEmployeeEmailSubject', $templateData, $entity->getId()),
-                            'message'   => __('complaintEmployeeEmailBody', $templateData, $entity->getId()),
+                            'subject'   => 'subject',//$this->__('complaintEmployeeEmailSubject', $templateData, $entity->getId()),
+                            'message'   => 'message - '.json_encode($templateData) ,//__('complaintEmployeeEmailBody', $templateData, $entity->getId()),
                         ];
                 }
 
@@ -69,8 +69,8 @@ class Manager
                     // MessageTypes::EMAIL
                     'emailFrom' => $emailFrom,
                     'emailTo'   => $entity->getEmail(),
-                    'subject'   => __('complaintClientEmailSubject', $templateData, $reseller->getId()),
-                    'message'   => __('complaintClientEmailBody', $templateData, $reseller->getId()),
+                    'subject'   => 'subject',//__('complaintClientEmailSubject', $templateData, $reseller->getId()),
+                    'message'   => 'message -'.json_encode($templateData),//__('complaintClientEmailBody', $templateData, $reseller->getId()),
                 ];
 
                 $r->setData(['items' => $items]);

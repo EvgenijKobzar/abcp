@@ -13,9 +13,12 @@ class Client extends Contractor
         return EntityType::CLIENT;
     }
 
+    /**
+     * @throws \ErrorException
+     */
     public function getSeller(): Seller
     {
-        return new Seller();
+        return EntityContractorFactory::create(EntityType::SELLER)::loadById(2);
     }
 
     public function hasMobile(): bool

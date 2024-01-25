@@ -17,9 +17,19 @@ class Seller extends Contractor
     {
         $filter['typeId'] = static::getType();
 
-        return static::getRepository()->getList([
-            'select' => ['id', 'name', 'typeId','email'],
-            'filter' => $filter
-        ])->fetchAll();
+//        return static::getRepository()->getList([
+//            'select' => ['id', 'name', 'typeId','email'],
+//            'filter' => $filter
+//        ]);
+
+        /** @mock */
+        $items[] = ['email' => EntityContractorFactory::create(EntityType::EMPLOYEE)::loadById(201)->getEmail()];
+        $items[] = ['email' => EntityContractorFactory::create(EntityType::EMPLOYEE)::loadById(202)->getEmail()];
+        $items[] = ['email' => EntityContractorFactory::create(EntityType::EMPLOYEE)::loadById(203)->getEmail()];
+        $items[] = ['email' => EntityContractorFactory::create(EntityType::EMPLOYEE)::loadById(204)->getEmail()];
+
+        return $items;
+
+
     }
 }

@@ -5,8 +5,8 @@ namespace Lib;
 class Error
 {
     public function __construct(
-        protected int $code = 0,
         protected string $message = '',
+        protected int $code = 0,
     )
     {
     }

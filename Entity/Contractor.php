@@ -42,9 +42,24 @@ class Contractor
         }
     }
 
-    static protected function getRepository(): void
+    /**
+     * @return __anonymous@982
+     */
+    static protected function getRepository()
     {
-        // TODO: Implement getRepository() method.
+         return new class {
+            public function getList($params): array
+            {
+                $name = EntityType::resolveName($params['filter']['typeId']).'_'.$params['filter']['id'];
+
+                return [
+                    'id' => $params['filter']['id'],
+                    'name' => $name,
+                    'typeId' => $params['filter']['typeId'],
+                    'email' => $name.'@mail.com'
+                ];
+            }
+        };
     }
 
     public function getFullName(): string

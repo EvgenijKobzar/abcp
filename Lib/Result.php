@@ -22,6 +22,26 @@ class Result
     }
 
     /**
+     * @return array
+     */
+    public function getErrors(): array
+    {
+        return $this->errors;
+    }
+
+    public function getErrorsMessage(): array
+    {
+        $result = [];
+        /** @var Error $error */
+        foreach ($this->getErrors() as $error)
+        {
+            $result[] = $error->getMessage();
+        }
+
+        return $result;
+    }
+
+    /**
      * @param array $data
      */
     public function setData(array $data): void

@@ -122,11 +122,11 @@ class HandlerReturn
                             // TODO: рассмотреть возможность отправки через очередь - асинхронно
                             $r = $this->notificationSendDirectly(
                                 $fields['notificationType'],
-                                $fields['differences']['to'],
                                 [
                                     'client' => $client,
                                     'reseller' => $reseller
                                 ],
+                                $fields['differences']['to'],
                                 $templateData
                             );
                         }
@@ -158,7 +158,8 @@ class HandlerReturn
             $r = (new Manager())->resolveEntityCommunicationData(EntityType::EMPLOYEE, $reseller, $templateData);
             if ($r->isSuccess())
             {
-                $result['notificationEmployeeByEmail'] = MessagesClient::sendMessage($r->getData()['items'], $reseller->getId(), null, self::CHANGE_RETURN_STATUS, null);
+                $result['employees'] = $r->getData()['items'];
+                $result['notificationEmployeeByEmail'] = true ; //MessagesClient::sendMessage($r->getData()['items'], $reseller->getId(), null, self::CHANGE_RETURN_STATUS, null);
             }
 
             // Шлём клиентское уведомление, только если произошла смена статуса
@@ -170,7 +171,7 @@ class HandlerReturn
 
                     if ($r->isSuccess())
                     {
-                        $result['notificationClientByEmail'] = MessagesClient::sendMessage($r->getData(), $reseller->getId(), $client->getId(), self::CHANGE_RETURN_STATUS, $fields['differences']['to']);
+                        $result['notificationClientByEmail'] = true; //MessagesClient::sendMessage($r->getData(), $reseller->getId(), $client->getId(), self::CHANGE_RETURN_STATUS, $fields['differences']['to']);
                     }
 
                     if ($client->hasMobile())
@@ -349,18 +350,18 @@ class HandlerReturn
             'expired',
         ];
 
-        $hash_string = '';
+        $sign_string = '';
         foreach ($fields as $field) {
-            $hash_string .= (isset($data[$field]) ? $data[$field] : '') . ';';
+            $sign_string .= (isset($data[$field]) ? $data[$field] : '') . ';';
         }
 
-        $hash_string .= $this->getSecretKey();
+        $sign_string .= $this->getSecretKey();
 
-        $transaction_hash = base64_encode(hash('sha256', $hash_string, true));
+        $sign = base64_encode(hash('sha256', $sign_string, true));
 
-        $transaction_sign = isset($data['hash']) ? (string)$data['hash'] : null;
+        $hash = isset($data['hash']) ? (string)$data['hash'] : null;
 
-        if ($transaction_sign !== $transaction_hash)
+        if ( $sign !== $hash)
         {
             $r->addError(new Error('Hash invalid'), 500);
         }
